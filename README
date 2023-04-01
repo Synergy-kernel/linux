@@ -16,3 +16,37 @@ several of them using the Restructured Text markup notation.
 Please read the Documentation/process/changes.rst file, as it contains the
 requirements for building and running the kernel, and information about
 the problems which may result by upgrading your kernel.
+
+Configuring the kernel
+
+If the developer has pointed you at a specific config file to use, save it in the linux directory with the filename .config
+
+Otherwise, you’ll need to pick a configuration file to start from. The Linux kernel has thousands of configuration options, so you don’t want to start from scratch unless you know what you’re doing.
+Starting from an installed kernel configuration
+
+If you want to tweak the configuration of a kernel you already have installed, you can start with its configuration which is stored in /boot/. For example, to start with the configuration of the currently running kernel:
+
+cp /boot/config-`uname -r`* .config
+
+Building the kernel
+
+Once you’ve configured the kernel, you’re ready to build it. Before you do so, you’ll want to change the EXTRAVERSION in the Makefile to something you’ll recognize later. For example, if it reads EXTRAVERSION = -rc5 change it to EXTRAVERSION = -rc5-kernelname:
+
+$EDITOR Makefile
+
+Now you’re ready to build the kernel:
+
+make oldconfig
+make bzImage
+make modules
+
+Installing the kernel
+
+Installing the kernel is as simple as:
+
+sudo make modules_install
+sudo make install
+
+Rebuilding
+
+If you have been asked to try several different things, the procedure once you have already built the tree once is mostly the same. Running make clean is recommended between builds. This will leave the .config in place, so you can skip that step above and proceed straight to the make bzImage part of the steps above. Because we installed ccache in the first step, subsequent builds may go a lot faster as the compiler hits files that haven’t changed since the last time it built them.
